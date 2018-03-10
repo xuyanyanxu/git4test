@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	http://www.springframework.org/schema/context 
+	http://www.springframework.org/schema/context/spring-context-4.0.xsd
+	http://www.springframework.org/schema/aop 
+	http://www.springframework.org/schema/aop/spring-aop-4.0.xsd 
+	http://www.springframework.org/schema/tx 
+	http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+	http://www.springframework.org/schema/util 
+	http://www.springframework.org/schema/util/spring-util-4.0.xsd">
+	
+	<!-- 配置db.properties文件 -->
+	<context:property-placeholder location="classpath:db.properties"/>
+
+	<!-- 配置数据�?-->
+	<bean id="dataSource" 
+		class="com.alibaba.druid.pool.DruidDataSource" 
+		destroy-method="close">
+		
+		<!-- 基础属�?的配�?-->
+		<property name="driverClassName" value="${db.driverClassName}" />
+		<property name="url" value="${db.url}" />
+		<property name="username" value="${db.username}" />
+		<property name="password" value="${db.password}" />
+		
+		<!-- �?��连接�?-->
+		<property name="maxActive" value="${db.maxActive}" />
+		<!-- 初始化连接数 -->
+		<property name="initialSize" value="${db.initialSize}" />
+		<!-- �?��空闲连接�?-->
+		<property name="minIdle" value="${db.minIdle}" />
+		<!-- �?��空闲连接�?-->
+		<property name="maxIdle" value="${db.maxIdle}" />
+		<!-- 获取连接超时时间 -->
+		<property name="maxWait" value="${db.maxWait}" />
+		
+	</bean>
+	
+	<!-- 配置sqlSessionFactoryBean -->
+	<bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+		<!-- 注入数据源对�?-->
+		<property name="dataSource" ref="dataSource"/>
+		
+		<!-- 加载mybatis主配置文�?-->
+		<property name="configLocation" value="classpath:mybatis/sqlMapConfig.xml"/>
+	</bean>
+	
+	<!-- 配置mapper自动扫描 -->
+	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+		<!-- 配置要扫描器的包，说明：
+		  1.如果有多个包，在同一个父包下，配置父包即�?
+		  2.如果不在�?��父包下，以半角�?号进行分割：","
+		 -->
+		 <property name="basePackage" value="cn.itcast.ssm.mapper"/>
+	</bean>
+	
+</beans>
